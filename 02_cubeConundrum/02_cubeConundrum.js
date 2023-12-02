@@ -3,7 +3,6 @@
 // some games are impossible as the elf pulled more cubes of one or more colors than exist
 // find the sum of all the possible games id's ommiting the impossible ones
 
-const { count } = require("console");
 const fs = require("fs");
 const readline = require("readline");
 
