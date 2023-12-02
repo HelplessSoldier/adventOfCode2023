@@ -77,7 +77,6 @@ function _gameLineToObject(line) {
 }
 
 function _getMaxCountOfColor(countString, color) {
-  const intChars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
   const countStringArray = countString.split(/\s|,|;/);
   let maxSeen = 0;
   for (let i = 0; i < countStringArray.length; i++) {
