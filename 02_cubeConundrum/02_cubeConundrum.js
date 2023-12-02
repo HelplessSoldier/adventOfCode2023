@@ -7,8 +7,10 @@ const { count } = require("console");
 const fs = require("fs");
 const readline = require("readline");
 
-findSumOfPossibleGameIds('./data.txt');
+findSumOfPossibleGameIds("./data.txt");
+sumPowerFewestCubes("./data.txt");
 
+// part one
 async function findSumOfPossibleGameIds(filename) {
   const fileStream = fs.createReadStream(filename);
   const rl = readline.createInterface({
@@ -29,6 +31,24 @@ async function findSumOfPossibleGameIds(filename) {
     idSum += lineObject.gameNumber;
   }
   console.log(idSum);
+}
+
+// part two
+async function sumPowerFewestCubes(filename) {
+  const fileStream = fs.createReadStream(filename);
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity,
+  });
+
+  let powSum = 0;
+  for await (const line of rl) {
+    const lineObject = _gameLineToObject(line);
+    const currentPow =
+      lineObject.maxRed * lineObject.maxBlue * lineObject.maxGreen;
+    powSum += currentPow;
+  }
+  console.log(powSum);
 }
 
 /** take a line and return an object with the game number
