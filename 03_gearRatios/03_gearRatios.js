@@ -9,44 +9,50 @@ function sumPartNumbers(data) {
   const dataArray = dataToArray(data);
   const partNumbers = getPartNumbers(dataArray);
   let res = 0;
-  partNumbers.map((partNum) => res += Number(partNum));
+  partNumbers.map((partNum) => (res += Number(partNum)));
   return res;
+}
+
+function sumGearRatios(data) {
+  const dataArray = dataToArray(data);
+  const gearRatios = getGearRatios(dataArray);
+  return;
+}
+
+function getGearRatios(dataArray) {
+  const arrHeight = dataArray.length;
+  const arrWidth = dataArray[0].length;
+  const searchDirections = getSearchDirections();
+
+  for (let x = 0; x < arrHeight; x++) {
+    for (let y = 0; y < arrWidth; y++) { }
+  }
 }
 
 function getPartNumbers(dataArray) {
   const arrHeight = dataArray.length;
   const arrWidth = dataArray[0].length;
-  const searchDirections = [
-    [-1, -1],
-    [-1, 0],
-    [-1, 1],
-    [0, -1],
-    [0, 1],
-    [1, -1],
-    [1, 0],
-    [1, 1],
-  ];
+  const searchDirections = getSearchDirections();
 
   let res = [];
-  let currentNum = '';
+  let currentNum = "";
   let partNumber = false;
   for (let x = 0; x < arrHeight; x++) {
     for (let y = 0; y < arrWidth; y++) {
-
       const currentChar = dataArray[x][y];
 
       // not in number, if search found special char, add currentNum to res
       // reset regardless
-      if (currentChar === '.' || isSpecialChar(currentChar)) {
+      if (currentChar === "." || isSpecialChar(currentChar)) {
         if (partNumber) {
           res.push(currentNum);
         }
-        currentNum = '';
+        currentNum = "";
         partNumber = false;
       }
 
       // in a number, search for special char adjacent and add char to currentNum
-      if (!isSpecialChar(currentChar) && currentChar !== '.') {
+      if (!isSpecialChar(currentChar) && currentChar !== ".") {
         currentNum = currentNum + currentChar;
         for (let direction of searchDirections) {
           const searchX = direction[0] + x;
@@ -87,22 +93,31 @@ function inBounds(x, y, width, height) {
   return true;
 }
 
+function getSearchDirections() {
+  return [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
+}
+
 function isSpecialChar(char) {
-  if (
-    char === '!' ||
-    char === '@' ||
-    char === '#' ||
-    char === '$' ||
-    char === '%' ||
-    char === '^' ||
-    char === '&' ||
-    char === '*' ||
-    char === '-' ||
-    char === '+' ||
-    char === '/' ||
-    char === '='
-  ) {
-    return true
+  const specialChars = ["!", "@", "#", "$", "%", "^", "&", "*", "-", "+", "/", "="];
+  if (specialChars.includes(char)) {
+    return true;
+  }
+  return false;
+}
+
+function isNumerical(char) {
+  const numericalChars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+  if (numericalChars.includes(char)) {
+    return true;
   }
   return false;
 }
