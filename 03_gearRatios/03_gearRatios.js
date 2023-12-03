@@ -4,6 +4,7 @@ const data = fs.readFileSync("./data.txt", "utf8");
 
 console.log(sumPartNumbers(data));
 
+// part 1
 function sumPartNumbers(data) {
   const dataArray = dataToArray(data);
   const partNumbers = getPartNumbers(dataArray);
@@ -39,8 +40,6 @@ function getPartNumbers(dataArray) {
       if (currentChar === '.' || isSpecialChar(currentChar)) {
         if (partNumber) {
           res.push(currentNum);
-        } else if (currentNum.length > 0) {
-          console.log(`ommitted: ${currentNum}`);
         }
         currentNum = '';
         partNumber = false;
