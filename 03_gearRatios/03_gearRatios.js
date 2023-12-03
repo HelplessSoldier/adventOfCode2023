@@ -14,7 +14,11 @@ function sumPartNumbers(data) {
   return res;
 }
 
-// part 2
+// part 2 incomplete, incorrect ans
+// correct answer is      79844424 (from another users solution)
+// but this is outputting 78411299...
+// i've noticed it's skipping some gear pairs, notably at 66:140 
+// in the data.txt, [770, 248] doesn't appear in the gear Ratio's
 function sumGearRatios(data) {
   const dataArray = dataToArray(data);
   const gearRatios = getGearRatios(dataArray);
