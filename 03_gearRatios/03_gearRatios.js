@@ -3,7 +3,7 @@ const fs = require("fs");
 const data = fs.readFileSync("./data.txt", "utf8");
 
 console.log(sumPartNumbers(data));
-sumGearRatios(data);
+console.log(sumGearRatios(data));
 
 // part 1
 function sumPartNumbers(data) {
@@ -14,10 +14,13 @@ function sumPartNumbers(data) {
   return res;
 }
 
+// part 2
 function sumGearRatios(data) {
   const dataArray = dataToArray(data);
   const gearRatios = getGearRatios(dataArray);
-  return;
+  let res = 0;
+  gearRatios.map((ratio) => res += ratio[0] * ratio[1]);
+  return res;
 }
 
 function getGearRatios(dataArray) {
@@ -52,7 +55,7 @@ function getGearRatios(dataArray) {
       }
     }
   }
-  console.log(allPotentialGearRatios);
+  return allPotentialGearRatios;
 }
 
 function getPartNumbers(dataArray) {
