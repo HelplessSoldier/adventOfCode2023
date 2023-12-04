@@ -3,17 +3,30 @@ const readline = require("readline");
 
 example1();
 part1();
+example2();
 
 async function example1() {
   const filename = "./exampleInput.txt";
   const totalPoints = await findTotalPoints(filename);
-  console.log(`Example: ${totalPoints}`);
+  console.log(`Example 1: ${totalPoints}`);
 }
 
 async function part1() {
   const filename = "./input.txt";
   const totalPoints = await findTotalPoints(filename);
   console.log(`Part 1: ${totalPoints}`);
+}
+
+function example2() {
+  const filename = "./exampleInput.txt";
+  const cardCount = findTotalScratchCards(filename);
+  console.log(`Example 2: ${cardCount}`);
+}
+
+function findTotalScratchCards(filename) {
+  const input = fs.readFileSync(filename, "utf8");
+  const lines = input.split("\n").filter((a) => a !== "");
+  console.log(lines);
 }
 
 async function findTotalPoints(filename) {
@@ -31,7 +44,7 @@ async function findTotalPoints(filename) {
 }
 
 function getCurrentLinePoints(line) {
-  const { leftNums, rightNums } = getLeftAndRightNums(line);
+  const { _, leftNums, rightNums } = splitLine(line);
   let res = 0;
 
   for (const num of rightNums) {
@@ -44,8 +57,9 @@ function getCurrentLinePoints(line) {
   return res;
 }
 
-function getLeftAndRightNums(line) {
+function splitLine(line) {
   const splitLine = line.split(/[:|]/);
+  const gameNum = Number(splitLine[0].split(" ")[1]);
   const leftNums = splitLine[1]
     .split(" ")
     .filter((a) => a !== "")
@@ -54,5 +68,5 @@ function getLeftAndRightNums(line) {
     .split(" ")
     .filter((a) => a !== "")
     .map((a) => Number(a));
-  return { leftNums, rightNums };
+  return { gameNum, leftNums, rightNums };
 }
