@@ -4,6 +4,7 @@ const readline = require("readline");
 example1();
 part1();
 example2();
+part2();
 
 async function example1() {
   const filename = "./exampleInput.txt";
@@ -23,10 +24,36 @@ function example2() {
   console.log(`Example 2: ${cardCount}`);
 }
 
+function part2() {
+  const filename = "./input.txt";
+  const cardCount = findTotalScratchCards(filename);
+  console.log(`Part 2: ${cardCount}`);
+}
+
 function findTotalScratchCards(filename) {
   const input = fs.readFileSync(filename, "utf8");
   const lines = input.split("\n").filter((a) => a !== "");
-  console.log(lines);
+
+  const linesArr = [];
+  for (const line of lines) {
+    const { _, leftNums, rightNums } = splitLine(line);
+    const winAmount = getCurrentLinePointsSummed(leftNums, rightNums);
+    linesArr.push({
+      winAmount,
+      count: 1
+    })
+  }
+
+  for (let i = 0; i < linesArr.length; i++) {
+    const currentCard = linesArr[i];
+    for (j = 1; j <= currentCard.winAmount; j++) {
+      linesArr[i + j].count += currentCard.count;
+    }
+  }
+
+  let res = 0;
+  linesArr.forEach((line) => res += line.count);
+  return res;
 }
 
 async function findTotalPoints(filename) {
@@ -38,12 +65,12 @@ async function findTotalPoints(filename) {
 
   let res = 0;
   for await (const line of rl) {
-    res += getCurrentLinePoints(line);
+    res += getCurrentLinePointsDoubled(line);
   }
   return res;
 }
 
-function getCurrentLinePoints(line) {
+function getCurrentLinePointsDoubled(line) {
   const { _, leftNums, rightNums } = splitLine(line);
   let res = 0;
 
@@ -52,6 +79,18 @@ function getCurrentLinePoints(line) {
       continue;
     }
     res = res === 0 ? 1 : res * 2;
+  }
+
+  return res;
+}
+
+function getCurrentLinePointsSummed(leftNums, rightNums) {
+  let res = 0;
+
+  for (const num of rightNums) {
+    if (leftNums.includes(num)) {
+      res++;
+    }
   }
 
   return res;
