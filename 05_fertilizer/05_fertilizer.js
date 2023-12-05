@@ -18,20 +18,47 @@ const data = fs.readFileSync("./input.txt", "utf8");
 
 console.log(part1(exampleData));
 console.log(part1(data));
+console.log(part2(exampleData));
+console.log(part2(data));
 
 function part1(data) {
   const { seeds, maps } = parseInput(data);
-  let seedPaths = [];
-  for (let seedNumber of seeds) {
-    const seedPath = seedToPath(seedNumber, maps);
-    seedPaths.push(seedPath);
+  let smallest = Infinity;
+
+  for (let seed of seeds) {
+    const currentPath = seedToPath(seed, maps);
+    const currentLoc = currentPath[currentPath.length - 1];
+    if (currentLoc < smallest) {
+      smallest = currentLoc;
+    }
   }
 
+  return smallest;
+}
+
+function part2(data) {
+  const { seeds, maps } = parseInput(data);
+
   let smallest = Infinity;
-  for (let path of seedPaths) {
-    const location = path[path.length - 1];
-    if (location < smallest) {
-      smallest = location;
+  let cycle = 0;
+  let startTime = performance.now();
+  for (let i = 0; i < seeds.length; i += 2) {
+    const seedStart = seeds[i];
+    const seedEnd = seeds[i] + seeds[i + 1];
+    for (let seedNumber = seedStart; seedNumber < seedEnd; seedNumber++) {
+      cycle++;
+      const currentPath = seedToPath(seedNumber, maps);
+      const currentLoc = currentPath[currentPath.length - 1];
+      smallest = currentLoc < smallest ? currentLoc : smallest;
+      const elapsedTime = performance.now() - startTime;
+      const minuites = Math.floor((elapsedTime / 1000 / 60) << 0);
+      const seconds = Math.floor((elapsedTime / 1000) % 60);
+      console.log(
+        `Current: ${currentLoc} smallest: ${smallest} progress: ${(
+          (cycle / 1951135283) *
+          100
+        ).toPrecision(3)}% elapsedTime: ${minuites}:${seconds}`
+      );
     }
   }
   return smallest;
@@ -67,7 +94,6 @@ function isInRange(sourceStart, rangeLength, checkNumber) {
 }
 
 function parseInput(data) {
-  // get seeds and maps into arrays of nums
   const splitData = data.split(/\n\s*\n/);
 
   const seeds = splitData[0]
@@ -88,3 +114,22 @@ function parseInput(data) {
   }
   return { seeds, maps };
 }
+
+/*
+ lmao 
+#
+# Fatal error in , line 0
+# Fatal JavaScript invalid size error 169220804
+#
+#
+#
+#FailureMessage Object: 0x7ffcbed91e10
+ 1: 0xbee3e1  [node]
+ 2: 0x1e6b0b4 V8_Fatal(char const*, ...) [node]
+ 3: 0xf07f88  [node]
+ 4: 0x10b7452  [node]
+ 5: 0x10b7712  [node]
+ 6: 0x12c6adb v8::internal::Runtime_GrowArrayElements(int, unsigned long*, v8::internal::Isolate*) [node]
+ 7: 0x17035b9  [node]
+Trace/breakpoint trap (core dumped)
+*/
