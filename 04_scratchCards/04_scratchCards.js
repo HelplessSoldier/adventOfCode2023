@@ -1,10 +1,18 @@
 const fs = require("fs");
 const readline = require("readline");
 
-example1();
-part1();
-example2();
-part2();
+run();
+
+async function run() {
+  const startTime = performance.now();
+  await Promise.all([
+    example1(),
+    part1(),
+    example2(),
+    part2(),
+  ])
+  console.log(`Total excecution time: ${performance.now() - startTime}ms`);
+}
 
 async function example1() {
   const filename = "./exampleInput.txt";
