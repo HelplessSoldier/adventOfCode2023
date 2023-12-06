@@ -1,16 +1,3 @@
-// map is in form  <int int int>
-// first num is destination range start
-// second is source range start
-// last is the range of both
-
-// so 50 98 2 lines up as
-// 98, 99
-//  ↓   ↓
-// 50, 51
-
-// part 1:
-// find the lowest location value for the seed list/map
-
 const fs = require("fs");
 
 const exampleData = fs.readFileSync("./exampleInput.txt", "utf8");
@@ -114,22 +101,3 @@ function parseInput(data) {
   }
   return { seeds, maps };
 }
-
-/*
- lmao 
-#
-# Fatal error in , line 0
-# Fatal JavaScript invalid size error 169220804
-#
-#
-#
-#FailureMessage Object: 0x7ffcbed91e10
- 1: 0xbee3e1  [node]
- 2: 0x1e6b0b4 V8_Fatal(char const*, ...) [node]
- 3: 0xf07f88  [node]
- 4: 0x10b7452  [node]
- 5: 0x10b7712  [node]
- 6: 0x12c6adb v8::internal::Runtime_GrowArrayElements(int, unsigned long*, v8::internal::Isolate*) [node]
- 7: 0x17035b9  [node]
-Trace/breakpoint trap (core dumped)
-*/
