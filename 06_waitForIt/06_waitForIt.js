@@ -3,10 +3,12 @@ const fs = require("fs");
 const example = fs.readFileSync("./example.txt", "utf8");
 const input = fs.readFileSync("./input.txt", "utf8");
 
+const startTime = performance.now();
 console.log(`Part 1 ex: ` + part1(example));
 console.log(`Part 1 in: ` + part1(input));
 console.log(`Part 2 ex: ` + part2(example));
 console.log(`Part 2 in: ` + part2(input));
+console.log(`Completed in ${performance.now() - startTime}ms`)
 
 function part1(input) {
   const inputObjects = parseInput(input);
