@@ -8,7 +8,7 @@ console.log(`Part 1 ex: ` + part1(example));
 console.log(`Part 1 in: ` + part1(input));
 console.log(`Part 2 ex: ` + part2(example));
 console.log(`Part 2 in: ` + part2(input));
-console.log(`Completed in ${performance.now() - startTime}ms`)
+console.log(`Completed in ${performance.now() - startTime}ms`);
 
 function part1(input) {
   const inputObjects = parseInput(input);
@@ -28,14 +28,14 @@ function part2(input) {
   const inputObjects = parseInput(input);
 
   let asSingleRace = {
-    time: '',
-    dist: ''
+    time: "",
+    dist: "",
   };
 
   inputObjects.map((obj) => {
     asSingleRace.time += String(obj.time);
     asSingleRace.dist += String(obj.dist);
-  })
+  });
 
   asSingleRace.time = Number(asSingleRace.time);
   asSingleRace.dist = Number(asSingleRace.dist);
@@ -49,9 +49,9 @@ function part2(input) {
 
 function multiplyArr(arr) {
   let res = 0;
-  arr.map(num => {
+  arr.map((num) => {
     res = res === 0 ? num : res * num;
-  })
+  });
   return res;
 }
 
@@ -75,7 +75,7 @@ function winningBtnPress(time, dist, pressTime) {
   const speed = pressTime;
   const remainingTime = time - pressTime;
   const distanceTraveled = speed * remainingTime;
-  return (distanceTraveled > dist);
+  return distanceTraveled > dist;
 }
 
 function parseInput(input) {
