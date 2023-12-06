@@ -6,7 +6,7 @@ const data = fs.readFileSync("./input.txt", "utf8");
 console.log(part1(exampleData));
 console.log(part1(data));
 console.log(part2(exampleData));
-console.log(part2(data));
+//console.log(part2(data));
 
 function part1(data) {
   const { seeds, maps } = parseInput(data);
@@ -25,30 +25,70 @@ function part1(data) {
 
 function part2(data) {
   const { seeds, maps } = parseInput(data);
+  let ranges = seedRanges(seeds);
+
+  for (let map of maps) {
+    ranges = nextMapRanges(map, ranges);
+  }
 
   let smallest = Infinity;
-  let cycle = 0;
-  let startTime = performance.now();
+  for (let range of ranges) {
+    smallest = smallest < range[0] ? smallest : range[0];
+  }
+
+  return smallest;
+}
+
+function seedRanges(seeds) {
+  let seedRanges = [];
   for (let i = 0; i < seeds.length; i += 2) {
-    const seedStart = seeds[i];
-    const seedEnd = seeds[i] + seeds[i + 1];
-    for (let seedNumber = seedStart; seedNumber < seedEnd; seedNumber++) {
-      cycle++;
-      const currentPath = seedToPath(seedNumber, maps);
-      const currentLoc = currentPath[currentPath.length - 1];
-      smallest = currentLoc < smallest ? currentLoc : smallest;
-      const elapsedTime = performance.now() - startTime;
-      const minuites = Math.floor((elapsedTime / 1000 / 60) << 0);
-      const seconds = Math.floor((elapsedTime / 1000) % 60);
-      console.log(
-        `Current: ${currentLoc} smallest: ${smallest} progress: ${(
-          (cycle / 1951135283) *
-          100
-        ).toPrecision(3)}% elapsedTime: ${minuites}:${seconds}`
-      );
+    const currentSeedRange = [seeds[i], seeds[i] + seeds[i + 1] - 1];
+    seedRanges.push(currentSeedRange);
+  }
+  return seedRanges;
+}
+
+function nextMapRanges(map, ranges) {
+  let newRanges = [];
+  for (let mapRange of map) {
+    const [destinationStart, sourceStart, rangeLength] = mapRange;
+    for (let range of ranges) {
+      const [rangeStart, rangeEnd] = range;
+
+      const leftSideInRange = isInRange(sourceStart, rangeLength, rangeStart);
+      const rightSideInRange = isInRange(sourceStart, rangeLength, rangeEnd);
+
+      const mapRangeDelta = destinationStart - sourceStart;
+      if (leftSideInRange && rightSideInRange) {
+
+        // no overflow on range, just shift it 
+        const newRangeStart = rangeStart + mapRangeDelta;
+        const newRangeEnd = rangeEnd + mapRangeDelta;
+        newRanges.push([newRangeStart, newRangeEnd]);
+
+      } else if (!leftSideInRange && rightSideInRange) {
+
+        // overflows left, split into left with no delta and right with delta
+        const leftArr = [rangeStart, sourceStart];
+        const rightArr = [sourceStart + mapRangeDelta, rangeEnd + mapRangeDelta];
+        newRanges.push(leftArr, rightArr);
+
+      } else if (leftSideInRange && !rightSideInRange) {
+
+        // overflows right, split into left with delta and right with no delta
+        const rightArr = [sourceStart + rangeLength, rangeEnd];
+        const leftArr = [rangeStart + mapRangeDelta, sourceStart + rangeLength + mapRangeDelta]
+        newRanges.push(leftArr, rightArr);
+
+      } else {
+
+        // no overlap, keep range the same
+        newRanges.push(range);
+
+      }
     }
   }
-  return smallest;
+  return newRanges;
 }
 
 function seedToPath(seedNumber, maps) {
