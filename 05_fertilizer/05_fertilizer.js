@@ -50,45 +50,46 @@ function seedRanges(seeds) {
 
 function nextMapRanges(map, ranges) {
   let newRanges = [];
+
   for (let mapRange of map) {
+
     const [destinationStart, sourceStart, rangeLength] = mapRange;
+
+    const delta = destinationStart - sourceStart;
+    const mapLeft = sourceStart;
+    const mapRight = sourceStart + rangeLength;
+
     for (let range of ranges) {
-      const [rangeStart, rangeEnd] = range;
-
-      const leftSideInRange = isInRange(sourceStart, rangeLength, rangeStart);
-      const rightSideInRange = isInRange(sourceStart, rangeLength, rangeEnd);
-
-      const mapRangeDelta = destinationStart - sourceStart;
-      if (leftSideInRange && rightSideInRange) {
-
-        // no overflow on range, just shift it 
-        const newRangeStart = rangeStart + mapRangeDelta;
-        const newRangeEnd = rangeEnd + mapRangeDelta;
-        newRanges.push([newRangeStart, newRangeEnd]);
-
-      } else if (!leftSideInRange && rightSideInRange) {
-
-        // overflows left, split into left with no delta and right with delta
-        const leftArr = [rangeStart, sourceStart];
-        const rightArr = [sourceStart + mapRangeDelta, rangeEnd + mapRangeDelta];
-        newRanges.push(leftArr, rightArr);
-
-      } else if (leftSideInRange && !rightSideInRange) {
-
-        // overflows right, split into left with delta and right with no delta
-        const rightArr = [sourceStart + rangeLength, rangeEnd];
-        const leftArr = [rangeStart + mapRangeDelta, sourceStart + rangeLength + mapRangeDelta]
-        newRanges.push(leftArr, rightArr);
-
-      } else {
-
-        // no overlap, keep range the same
-        newRanges.push(range);
-
-      }
+      const rangeLeft = range[0];
+      const rangeRight = range[1];
+      const newRange = getNewRange(delta, mapRight, mapLeft, rangeLeft, rangeRight);
     }
   }
   return newRanges;
+}
+
+function getNewRange(delta, mapRight, mapLeft, rangeLeft, rangeRight) {
+  const leftSideInRange = rangeLeft > mapLeft && rangeLeft < mapRight;
+  const rightSideInRange = rangeRight > mapLeft && rangeRight < mapRight;
+
+  if (!leftSideInRange || !rightSideInRange) {
+    // one side is overflowing, split into 2 arrays and return them
+    let leftArray;
+    let rightArray;
+    if (!leftSideInRange) {
+      const leftArray = [rangeLeft, mapLeft];
+      const rightArray = [mapLeft + delta, rangeRight + delta];
+    }
+    if (!rightSideInRange) {
+      const leftArray = [rangeLeft + delta, mapRight + delta];
+      const rightArray = [mapRight, rangeRight];
+    }
+    return [leftArray, rightArray];
+  }
+
+  if (leftSideInRange && rightSideInRange) {
+    return [[rangeLeft + delta, rangeRight + delta]];
+  }
 }
 
 function seedToPath(seedNumber, maps) {
