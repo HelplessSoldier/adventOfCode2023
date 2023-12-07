@@ -1,14 +1,15 @@
 const fs = require("fs");
+const { get } = require("http");
 
 const example = fs.readFileSync("./example.txt", "utf8");
 const input = fs.readFileSync("./input.txt", "utf8");
 
-console.log(part1(example));
-console.log(part1(input));
+console.log('part 1 ex:', part1(example));
+console.log('part 1 in:', part1(input));
 
 function part1(input) {
-  const games = parseInput(input)
-  const sortedGames = sortGames(games)
+  const games = parseInput(input);
+  const sortedGames = sortGames(games);
   return getMultipliedBetSum(sortedGames);
 }
 
@@ -16,8 +17,8 @@ function getMultipliedBetSum(sortedGames) {
   let rank = 1;
   let res = 0;
   for (let game of sortedGames) {
-    res += game.bet * rank
-    rank++
+    res += game.bet * rank;
+    rank++;
   }
   return res;
 }
@@ -31,7 +32,7 @@ function sortGames(games) {
     } else {
       return 0;
     }
-  })
+  });
 }
 
 function hand1IsWinner(hand1, hand2) {
@@ -41,7 +42,7 @@ function hand1IsWinner(hand1, hand2) {
   if (hand1Weight === hand2Weight) {
     return handleSameType(hand1, hand2);
   } else {
-    return hand1 > hand2;
+    return hand1Weight > hand2Weight;
   }
 }
 
@@ -58,12 +59,12 @@ function handleSameType(hand1, hand2) {
       return false;
     }
   }
-  // it's the same hand... 
+  // it's the same hand...
   return true;
 }
 
 function getHandWeight(hand) {
-  const counts = getCardCounts(hand)
+  const counts = getCardCounts(hand);
   if (isFiveOfAKind(counts)) {
     return 7;
   } else if (isFourOfAKind(counts)) {
