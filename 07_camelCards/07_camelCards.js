@@ -10,7 +10,7 @@ const startTime = performance.now();
 console.log("part 1 ex:", part1(example));
 console.log("part 1 in:", part1(input));
 console.log("part 2 ex:", part2(example));
-console.log("part 2 in:", part2(input)); // should be 247885995 but get 247385181
+console.log("part 2 in:", part2(input));
 console.log(`time to complete: ${performance.now() - startTime}ms`)
 
 function part1(input) {
@@ -310,7 +310,6 @@ function getCardWeights(joker) {
       A: 13,
     };
   }
-
 
   return cardWeights;
 }
