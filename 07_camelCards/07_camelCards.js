@@ -78,6 +78,10 @@ function findHighestWeightWithJokerRule(hand) {
 
     const currentWeight = getHandWeight(checkHand);
     maxWeight = Math.max(currentWeight, maxWeight);
+
+    if (maxWeight === 7) {
+      break;
+    }
   }
   return maxWeight;
 }
