@@ -1,15 +1,17 @@
 const fs = require("fs");
-const { get } = require("http");
 
 const example = fs.readFileSync("./example.txt", "utf8");
 const input = fs.readFileSync("./input.txt", "utf8");
+const lxsterEx = fs.readFileSync('./lxsterExample.txt', "utf8");
+
+console.log(part2(lxsterEx));
 
 const startTime = performance.now();
 console.log("part 1 ex:", part1(example));
 console.log("part 1 in:", part1(input));
 console.log("part 2 ex:", part2(example));
-console.log("part 2 in:", part2(input));
-console.log(`time to complete: ${p(performance.now() - startTime)}ms`)
+console.log("part 2 in:", part2(input)); // should be 247885995 but get 247385181
+console.log(`time to complete: ${performance.now() - startTime}ms`)
 
 function part1(input) {
   const games = parseInput(input);
@@ -41,15 +43,12 @@ function findHighestWeightWithJokerRule(hand) {
 
   let maxWeight = 0;
   const loopCount = cardOptions.length ** jokerCount;
-  for (let i = 0; i < loopCount; i++) {
+  for (let i = 0; i <= loopCount; i++) {
     let checkHand;
 
-    // father forgive me for what i'm about to do
-    const shift1 = i % cardOptions.length;
-    const shift2 = shift1 % cardOptions.length || 1;
-    const shift3 = shift2 % cardOptions.length || 1;
-    const shift4 = shift3 % cardOptions.length || 1;
-    const shift5 = shift4 % cardOptions.length || 1;
+    const shift1 = i
+    const shift2 = shift1 % cardOptions.length;
+    const shift3 = shift2 % cardOptions.length;
 
     if (jokerCount === 1) {
       checkHand = hand.split("");
@@ -72,23 +71,9 @@ function findHighestWeightWithJokerRule(hand) {
       checkHand = checkHand.join("");
     }
 
-    if (jokerCount === 4) {
-      checkHand = hand.split("");
-      checkHand[jokerLocations[0]] = cardOptions[shift4];
-      checkHand[jokerLocations[1]] = cardOptions[shift3];
-      checkHand[jokerLocations[2]] = cardOptions[shift2];
-      checkHand[jokerLocations[3]] = cardOptions[shift1];
-      checkHand = checkHand.join("");
-    }
-
-    if (jokerCount === 5) {
-      checkHand = hand.split("");
-      checkHand[jokerLocations[0]] = cardOptions[shift5];
-      checkHand[jokerLocations[1]] = cardOptions[shift4];
-      checkHand[jokerLocations[2]] = cardOptions[shift3];
-      checkHand[jokerLocations[3]] = cardOptions[shift2];
-      checkHand[jokerLocations[4]] = cardOptions[shift1];
-      checkHand = checkHand.join("");
+    if (jokerCount === 5 || jokerCount === 4) {
+      maxWeight = 7;
+      break;
     }
 
     const currentWeight = getHandWeight(checkHand);
@@ -136,7 +121,7 @@ function hand1IsWinnerJokerRule(hand1, hand2) {
   const hand2Weight = findHighestWeightWithJokerRule(hand2);
 
   if (hand1Weight === hand2Weight) {
-    return handleSameType(hand1, hand2);
+    return handleSameType(hand1, hand2, true);
   } else {
     return hand1Weight > hand2Weight;
   }
@@ -147,14 +132,14 @@ function hand1IsWinner(hand1, hand2) {
   const hand2Weight = getHandWeight(hand2);
 
   if (hand1Weight === hand2Weight) {
-    return handleSameType(hand1, hand2);
+    return handleSameType(hand1, hand2, false);
   } else {
     return hand1Weight > hand2Weight;
   }
 }
 
-function handleSameType(hand1, hand2) {
-  const cardWeights = getCardWeights();
+function handleSameType(hand1, hand2, joker) {
+  const cardWeights = getCardWeights(joker);
   for (let i = 0; i < hand1.length; i++) {
     const check1 = hand1[i];
     const check2 = hand2[i];
@@ -287,22 +272,42 @@ function parseInput(input) {
   return gameObjects;
 }
 
-function getCardWeights() {
-  const cardWeights = {
-    2: 1,
-    3: 2,
-    4: 3,
-    5: 4,
-    6: 5,
-    7: 6,
-    8: 7,
-    9: 8,
-    T: 9,
-    J: 10,
-    Q: 11,
-    K: 12,
-    A: 13,
-  };
+function getCardWeights(joker) {
+  let cardWeights;
+  if (!joker) {
+    cardWeights = {
+      2: 1,
+      3: 2,
+      4: 3,
+      5: 4,
+      6: 5,
+      7: 6,
+      8: 7,
+      9: 8,
+      T: 9,
+      J: 10,
+      Q: 11,
+      K: 12,
+      A: 13,
+    };
+  } else {
+    cardWeights = {
+      2: 1,
+      3: 2,
+      4: 3,
+      5: 4,
+      6: 5,
+      7: 6,
+      8: 7,
+      9: 8,
+      T: 9,
+      J: 0,
+      Q: 11,
+      K: 12,
+      A: 13,
+    };
+  }
+
 
   return cardWeights;
 }
