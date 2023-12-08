@@ -9,29 +9,23 @@ class DesertGraph {
   }
 
   part1() {
-    let currName = this._getHeadName();
-    let currInst = 0;
+    let currName = 'AAA';
+    let currInstr = 0;
     let stepCount = 0;
 
     while (currName !== "ZZZ") {
-      if (this.instructions[currInst] === "L") {
+      if (this.instructions[currInstr] === "L") {
         currName = this.graph[currName].left;
-        stepCount++;
-        currInst++;
-      } else if (this.instructions[currInst] === "R") {
-        currName = this.graph[currName].right;
-        stepCount++
-        currInst++;
       } else {
-        currInst = 0;
-        continue;
+        currName = this.graph[currName].right;
+      }
+      stepCount++
+      currInstr++;
+      if (currInstr > this.instructions.length - 1) {
+        currInstr = 0;
       }
     }
     return stepCount;
-  }
-
-  _getHeadName() {
-    return this.nodesArray[0][0];
   }
 
   _populateGraph() {
@@ -67,10 +61,10 @@ const example2 = fs.readFileSync('./example2.txt', 'utf8');
 const startTime = performance.now();
 
 const ex1Graph = new DesertGraph(example1);
-console.log('example 1 part1: ', ex1Graph.part1());
 const ex2Graph = new DesertGraph(example2);
-console.log('example 2 part1: ', ex2Graph.part1());
 const mainGraph = new DesertGraph(input);
+console.log('example 1 part1: ', ex1Graph.part1());
+console.log('example 2 part1: ', ex2Graph.part1());
 console.log('input part 1: ', mainGraph.part1());
 
 console.log(`Elapsed Time: ${performance.now() - startTime}ms`)
