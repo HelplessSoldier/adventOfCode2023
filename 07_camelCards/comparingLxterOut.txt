@@ -1,3 +1,7 @@
+this was for debugging. leaving it in incase someone else has the same issue
+error was that i used the same weight for joker cards in p2 as in p1
+so on a tie breaker jokers still won where they should have been losing.
+
 mine:  correct:
 
 '2345A' '2345A'
