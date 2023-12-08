@@ -155,28 +155,27 @@ function handleSameType(hand1, hand2, joker) {
       return false;
     }
   }
-  // it's the same hand...
+  // it's the same hand
   return true;
 }
 
 function getHandWeight(hand) {
   const counts = getCardCounts(hand);
-  if (isFiveOfAKind(counts)) {
-    return 7;
-  } else if (isFourOfAKind(counts)) {
-    return 6;
-  } else if (isFullHouse(counts)) {
-    return 5;
-  } else if (isThreeOfAkind(counts)) {
-    return 4;
-  } else if (isTwoPair(counts)) {
-    return 3;
-  } else if (isOnePair(counts)) {
-    return 2;
-  } else if (isHighCard(counts)) {
-    return 1;
-  } else {
-    throw new Error(`No hand weight found for hand: ${hand}`);
+  switch (true) {
+    case isFiveOfAKind(counts):
+      return 7;
+    case isFourOfAKind(counts):
+      return 6;
+    case isFullHouse(counts):
+      return 5;
+    case isThreeOfAkind(counts):
+      return 4;
+    case isTwoPair(counts):
+      return 3;
+    case isOnePair(counts):
+      return 2;
+    case isHighCard(counts):
+      return 1;
   }
 }
 
