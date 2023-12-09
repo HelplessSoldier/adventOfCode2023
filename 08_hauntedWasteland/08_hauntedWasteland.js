@@ -1,5 +1,15 @@
 const fs = require("fs");
 
+function lcmOfArray(array) {
+  function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+  }
+  function lcm(a, b) {
+    return (a * b) / gcd(a, b);
+  }
+  return array.reduce((acc, num) => lcm(acc, num), 1);
+}
+
 class DesertGraph {
   constructor(input) {
     this.input = input;
@@ -9,7 +19,7 @@ class DesertGraph {
   }
 
   part1() {
-    let currName = 'AAA';
+    let currName = "AAA";
     let currInstr = 0;
     let stepCount = 0;
 
@@ -19,13 +29,53 @@ class DesertGraph {
       } else {
         currName = this.graph[currName].right;
       }
-      stepCount++
+      stepCount++;
       currInstr++;
       if (currInstr > this.instructions.length - 1) {
         currInstr = 0;
       }
     }
     return stepCount;
+  }
+
+  part2() {
+    const startPoints = this._getP2StartPoints();
+    let stepCounts = [];
+    startPoints.map((startPoint) => {
+      stepCounts.push(this._getP2StepCount(startPoint))
+    })
+    return lcmOfArray(stepCounts);
+  }
+
+  _getP2StepCount(startPoint) {
+    let currName = startPoint;
+    let currInstr = 0;
+    let stepCount = 0;
+
+    while (currName[2] !== "Z") {
+      if (this.instructions[currInstr] === "L") {
+        currName = this.graph[currName].left;
+      } else {
+        currName = this.graph[currName].right;
+      }
+      stepCount++;
+      currInstr++;
+      if (currInstr > this.instructions.length - 1) {
+        currInstr = 0;
+      }
+    }
+    return stepCount;
+  }
+
+  _getP2StartPoints() {
+    let startPoints = [];
+    this.nodesArray.map((node) => {
+      const name = node[0];
+      if (name[2] === "A") {
+        startPoints.push(name);
+      }
+    })
+    return startPoints;
   }
 
   _populateGraph() {
@@ -55,16 +105,9 @@ class DesertGraph {
 }
 
 const input = fs.readFileSync("./input.txt", "utf8");
-const example1 = fs.readFileSync("./example1.txt", "utf8");
-const example2 = fs.readFileSync('./example2.txt', 'utf8');
 
 const startTime = performance.now();
-
-const ex1Graph = new DesertGraph(example1);
-const ex2Graph = new DesertGraph(example2);
 const mainGraph = new DesertGraph(input);
-console.log('example 1 part1: ', ex1Graph.part1());
-console.log('example 2 part1: ', ex2Graph.part1());
-console.log('input part 1: ', mainGraph.part1());
-
-console.log(`Elapsed Time: ${performance.now() - startTime}ms`)
+console.log("input part 1: ", mainGraph.part1());
+console.log('input part 2: ', mainGraph.part2());
+console.log(`Elapsed Time: ${performance.now() - startTime}ms`);
