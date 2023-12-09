@@ -6,21 +6,38 @@ const example = fs.readFileSync("./example.txt", "utf8");
 const startTime = performance.now();
 console.log(`part1 ex: ${part1(example)}`);
 console.log(`part1 in: ${part1(input)}`);
+console.log(`part2 ex: ${part2(example)}`);
+console.log(`part2 in: ${part2(input)}`);
 console.log(`Elapsed time: ${performance.now() - startTime}`);
 
 function part1(input) {
-  const lines = parseInput(input)
+  const lines = parseInput(input);
   let total = 0;
   for (let line of lines) {
-    total += extrapolateLine(line);
+    total += extrapolateLineForward(line);
   }
   return total;
 }
 
-function extrapolateLine(line) {
+function part2(input) {
+  const lines = parseInput(input);
+  let total = 0;
+  for (let line of lines) {
+    total += extrapolateLineBackwards(line);
+  }
+  return total;
+}
+
+function extrapolateLineForward(line) {
   const expandedLine = expandLine(line);
   const nextNum = getNextNum(expandedLine);
   return nextNum;
+}
+
+function extrapolateLineBackwards(line) {
+  const expandedLine = expandLine(line);
+  const priorNum = getPriorNum(expandedLine);
+  return priorNum;
 }
 
 function expandLine(line) {
@@ -35,13 +52,20 @@ function expandLine(line) {
 }
 
 function getNextNum(expandedLine) {
-  let rollingSum = 0;
+  let res = 0;
   for (let i = 0; i < expandedLine.length; i++) {
     const endnumIdx = expandedLine[i].length - 1;
-    const endnum = expandedLine[i][endnumIdx];
-    rollingSum += endnum;
+    res += expandedLine[i][endnumIdx];
   }
-  return rollingSum;
+  return res;
+}
+
+function getPriorNum(expandedLine) {
+  let res = 0;
+  for (let line of expandedLine) {
+    res = line[0] - res;
+  }
+  return res;
 }
 
 function getNextPattern(line) {
@@ -61,13 +85,13 @@ function getNextPattern(line) {
 function parseInput(input) {
   const lines = input.split("\n").filter((a) => a !== "");
   let splitLines = [];
-  lines.forEach(line => {
-    const splitLine = line.split(' ');
+  lines.forEach((line) => {
+    const splitLine = line.split(" ");
     for (let i = 0; i < splitLine.length; i++) {
       splitLine[i] = Number(splitLine[i]);
     }
     splitLines.push(splitLine);
-  })
+  });
   return splitLines;
 }
 
